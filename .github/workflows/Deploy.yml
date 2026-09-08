@@ -1,0 +1,35 @@
+name: Secure Rclone Deployment
+
+on:
+  push:
+    branches:
+      - main  # Triggers automation whenever you push to the main branch
+
+jobs:
+  deploy-cloud:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Fetch your repository files into the runner
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Grab and install the official Rclone binary
+    - name: Install Rclone
+      run: |
+        sudo curl https://rclone.org/install.sh | sudo bash
+
+    # 3. Inject configuration directly from GitHub Secrets into Rclone's environment
+    - name: Execute Cloud Sync
+      env:
+        # Tells Rclone what storage engine 'deploy_target' should use
+        RCLONE_CONFIG_DEPLOY_TARGET_TYPE: ${{ secrets.MY_CLOUD_TYPE }}
+        
+        # Injects the target cloud authentication credentials
+        RCLONE_CONFIG_DEPLOY_TARGET_ACCESS_KEY_ID: ${{ secrets.MY_CLOUD_ACCESS_KEY }}
+        RCLONE_CONFIG_DEPLOY_TARGET_SECRET_ACCESS_KEY: ${{ secrets.MY_CLOUD_SECRET_KEY }}
+        RCLONE_CONFIG_DEPLOY_TARGET_ENDPOINT: ${{ secrets.MY_CLOUD_ENDPOINT }}
+        RCLONE_CONFIG_DEPLOY_TARGET_REGION: ${{ secrets.MY_CLOUD_REGION }}
+      run: |
+        chmod +x .rclone.sh
+        ./.rclone.sh
