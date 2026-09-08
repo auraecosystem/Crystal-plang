@@ -1,0 +1,14 @@
+# 1. Physically delete the accidental config dump
+rm -f "rclone config"
+
+# 2. Tell Git to stop tracking the accidental config file if it was pushed
+git rm --cached "rclone config" 2>/dev/null || true
+
+# 3. Create or update your .gitignore to block both .conf and raw dumps
+echo ".rclone.conf" >> .gitignore
+echo "rclone config" >> .gitignore
+
+# 4. Commit and push the clean state
+git add .gitignore
+git commit -m "chore: remove accidental configuration logs and update gitignore"
+git push origin main
