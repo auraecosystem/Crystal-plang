@@ -1,5 +1,5 @@
 # Crystal-plang
-```pq
+```.rclone
 Q-lang/
 ├── src/
 │   ├── q.cr
