@@ -1,11 +1,8 @@
-#!/bin/bash
-# Exit immediately if a command exits with a non-zero status
-set -e
 
-echo "🚀 Initializing secure Rclone cloud synchronization..."
+# Un-track old raw configuration leaks from your local Git staging index
+git rm --cached -r .rclone.conf .rclone.sh 2>/dev/null || true
 
-# Run the sync command. 
-# Rclone automatically uses the environment variables passed by GitHub.
-rclone sync ./src deploy_target:q-lang --verbose
-
-echo "✅ Sync completed successfully!"
+# Add your changes and push to GitHub
+git add .rclone.sh .github/workflows/deploy.yml
+git commit -m "feat: implement secure cloud synchronization using environment variables"
+git push origin main
